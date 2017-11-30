@@ -17,7 +17,10 @@
             <hr/>
             <div id="comment_area">
                 <% comments.forEach(function(comment){ %>
-                    <div><%=comment.content%></div>
+                    <div>
+                        <%=comment.content%>
+                        (<a class="comment_delete" comment_id="<%=comment.id%>">삭제</a>)
+                    </div>
                 <% }); %>
             </div>
             <!-- db에 저장되어 있는 댓글들을 가져옴 -->
@@ -50,7 +53,8 @@
                     .done(function(args){
                         if(args.message === "success"){
                             $('#comment_area').append(
-                                '<div>'+args.content+'</div>'
+                                '<div>'+args.content+
+                                ' (<a class="comment_delete" comment_id="'+args.comment_id+'">삭제</a>)</div>'
                             )
                             $('#commentForm textarea[name = content]').val("");
                         }
@@ -61,6 +65,25 @@
                 }
                 return false;
             });
+        });
+        $(document).on('click', '.comment_delete', function(req,res){
+            //동적으로 추가되면서 이벤트를 할당 할 수 없어서 on을 사용
+            var $self = $(this);
+            //self변수 parent노드에 접근하기 위해, 함수안에서 $(this)를 하면 함수를 가르키기 때문에
+            if(confirm("삭제하시겠습니까?")){
+                $.ajax({
+                    url : '/admin/products/ajax_comment/delete',
+                    type : 'POST',
+                    data : {comment_id : $self.attr('comment_id')}
+                })
+                .done(function(args){
+                    $self.parent().remove();
+                    alert("삭제가 완료되었습니다.");
+                })
+                .fail(function(args){
+                    console.log(args);
+                })
+            }
         });
     </script>
 
