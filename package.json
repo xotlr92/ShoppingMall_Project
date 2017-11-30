@@ -1,0 +1,22 @@
+{
+  "name": "myapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start" : "nodemon ./app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xotlr92/ShoppingMall_Project.git"
+  },
+  "author": "Yoon",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/xotlr92/ShoppingMall_Project/issues"
+  },
+  "homepage": "https://github.com/xotlr92/ShoppingMall_Project#readme",
+  "dependencies": {
+    "express": "^4.16.2"
+  }
+}
