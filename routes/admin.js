@@ -13,7 +13,7 @@ router.get('/products', function(req,res){
 });
 // 제품 등록 페이지 작성
 router.get('/products/write', function(req,res){
-    res.render('admin/form');
+    res.render('admin/form', {product:""});
 });
 router.post('/products/write', function(req,res){
     var product = new ProductsModel({
@@ -45,6 +45,11 @@ router.post('/products/edit/:id', function(req,res){
     }
     ProductsModel.update({id:req.params.id}, {$set:query}, function(err){
         res.redirect('/admin/products/detail/'+req.params.id);
+    });
+});
+router.get('/products/delete/:id', function(req,res){
+    ProductsModel.remove({id:req.params.id}, function(err){
+        res.redirect('/admin/products');
     });
 });
 
