@@ -25,5 +25,11 @@ router.post('/products/write', function(req,res){
         res.redirect('/admin/products'); // 성공시 redirect
     });
 });
+//제품 상세 페이지 작성
+router.get('/products/detail/:id', function(req,res){
+   ProductsModel.findOne({id:req.params.id}, function(err, product){
+       res.render('admin/productsDetail', {product:product});
+   });
+});
 
 module.exports = router;
