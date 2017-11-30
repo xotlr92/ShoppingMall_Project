@@ -1,4 +1,5 @@
 var express = require('express');
+var path = require('path');
 
 // mongoose 설정
 var mongoose = require('mongoose');
@@ -16,6 +17,11 @@ var admin = require('./routes/admin');
 
 var app = express();
 var port = 3000;
+
+// 확장자가 ejs로 끝나는 view engine 추가
+// path.join : 현재 디렉토리 위치 + views 경로
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
 
 // 라우팅
 app.use('/admin', admin);
