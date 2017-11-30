@@ -31,5 +31,21 @@ router.get('/products/detail/:id', function(req,res){
        res.render('admin/productsDetail', {product:product});
    });
 });
+//제품 수정 페이지 작성
+router.get('/products/edit/:id', function(req,res){
+    ProductsModel.findOne({id:req.params.id}, function(err, product){
+        res.render('admin/form', {product:product});
+    });
+});
+router.post('/products/edit/:id', function(req,res){
+    var query = {
+        name : req.body.name,
+        price : req.body.price,
+        description : req.body.description
+    }
+    ProductsModel.update({id:req.params.id}, {$set:query}, function(err){
+        res.redirect('/admin/products/detail/'+req.params.id);
+    });
+});
 
 module.exports = router;
