@@ -17,11 +17,13 @@
   },
   "homepage": "https://github.com/xotlr92/ShoppingMall_Project#readme",
   "dependencies": {
+    "body-parser": "^1.18.2",
     "ejs": "^2.5.7",
     "express": "^4.16.2",
     "mongodb": "^2.2.33",
     "mongoose": "^4.13.5",
     "mongoose-auto-increment": "^5.0.1",
+    "morgan": "^1.9.0",
     "path": "^0.12.7"
   }
 }
