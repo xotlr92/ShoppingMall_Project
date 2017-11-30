@@ -7,7 +7,9 @@ router.get('/', function(req,res){
     res.send('admin app');
 });
 router.get('/products', function(req,res){
-    res.render('admin/products', {message:"hello"});
+    ProductsModel.find(function(err, products){
+        res.render('admin/products', {products:products});
+    });
 });
 // 제품 등록 페이지 작성
 router.get('/products/write', function(req,res){

@@ -12,6 +12,16 @@ var ProductsSchema = new Schema({
     }
 });
 
+ProductsSchema.virtual('getDate').get(function(){
+    //가상 변수를 만들어준다. mongoose 내장 메서드 virtual
+    var date = new Date(this.created_at);
+    return {
+        year : date.getFullYear(),
+        month : date.getMonth()+1,
+        day : date.getDate()
+    }
+    //getDate.year과 같이 사용가능.
+});
 ProductsSchema.plugin(autoIncrement.plugin, {
     model:'products', field:'id', startAt:1
 });
