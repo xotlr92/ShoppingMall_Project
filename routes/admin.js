@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 // model 모듈 불러오기
 var ProductsModel = require('../models/ProductsModel');
+var CommentsModel = require('../models/CommentsModel');
 
 router.get('/', function(req,res){
     res.send('admin app');
@@ -25,13 +26,15 @@ router.post('/products/write', function(req,res){
         res.redirect('/admin/products'); // 성공시 redirect
     });
 });
-//제품 상세 페이지 작성
+//제품 상세 라우터 작성
 router.get('/products/detail/:id', function(req,res){
-   ProductsModel.findOne({id:req.params.id}, function(err, product){
-       res.render('admin/productsDetail', {product:product});
-   });
+    ProductsModel.findOne({id:req.params.id}, function(err, product){
+        CommentsModel.find({product_id:req.params.id}, function(err, comments){
+            res.render('admin/productsDetail', {product:product, comments:comments});
+        });
+    });
 });
-//제품 수정 페이지 작성
+//제품 수정 라우터 작성
 router.get('/products/edit/:id', function(req,res){
     ProductsModel.findOne({id:req.params.id}, function(err, product){
         res.render('admin/form', {product:product});
@@ -47,9 +50,24 @@ router.post('/products/edit/:id', function(req,res){
         res.redirect('/admin/products/detail/'+req.params.id);
     });
 });
+//제품 삭제 라우터 작성
 router.get('/products/delete/:id', function(req,res){
     ProductsModel.remove({id:req.params.id}, function(err){
         res.redirect('/admin/products');
+    });
+});
+//댓글 입력 라우터 작성
+router.post('/products/ajax_comment/insert', function(req,res){
+    var comment = new CommentsModel({
+        content : req.body.content,
+        product_id : parseInt(req.body.product_id)
+    });
+    comment.save(function(err, comment){
+        res.json({
+            comment_id : comment.id,
+            content : comment.content,
+            message : "success"
+        });
     });
 });
 
