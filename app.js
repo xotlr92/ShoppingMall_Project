@@ -3,6 +3,12 @@ var path = require('path');
 var bodyParser = require('body-parser'); // form에서 넘어온 데이터를 javascript 객체로 맵핑
 var logger = require('morgan'); // post, get 요청시 console에 로깅
 var cookieParser = require('cookie-parser');
+//flash 설정
+var flash = require('connect-flash');
+//passport 설정
+var passport = require('passport');
+//session 사용하여 login
+var session = require('express-session');
 
 // mongoose 설정
 var mongoose = require('mongoose');
@@ -35,6 +41,23 @@ app.use(cookieParser());
 
 //upload path
 app.use('/uploads', express.static('uploads'));
+
+//session 관련 설정
+app.use(session({
+    secret : 'shoppingMall',
+    resave : false,
+    saveUninitialized : true,
+    cookie : {
+        maxAge : 2000*60*60 // 지속시간 2시간 설정
+    }
+}));
+
+//passport 적용
+app.use(passport.initialize());
+app.use(passport.session());
+
+//flash message 미들웨어
+app.use(flash());
 
 // 라우팅
 app.use('/admin', admin);

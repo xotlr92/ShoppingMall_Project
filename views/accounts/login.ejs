@@ -19,6 +19,9 @@
                     </fieldset>
                 </form>
             </div>
+            <%if(typeof flashMessage !=='undefined') {%>
+                <div class="alert alert-danger" role="alert"><%=flashMessage%></div>
+            <%}%>
         </div>
     </div>
 </div>
