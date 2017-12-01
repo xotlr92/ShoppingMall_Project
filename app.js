@@ -32,6 +32,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(cookieParser());
 
+//upload path
+app.use('/uploads', express.static('uploads'));
+
 // 라우팅
 app.use('/admin', admin);
 

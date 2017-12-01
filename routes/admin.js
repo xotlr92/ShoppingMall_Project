@@ -7,6 +7,21 @@ var CommentsModel = require('../models/CommentsModel');
 var csrf = require('csurf');
 var csrfProtection = csrf({cookie:true});//csrf 미들웨어 설정
 //미들웨어 설정시 req.csrfToken()사용가능.
+var path = require('path');
+var uploadDir = path.join(__dirname, '../uploads'); //uploads 폴더 경로
+var fs = require('fs');
+//multer 셋팅
+var multer = require('multer');
+var storage = multer.diskStorage({
+    destination : function(req, file, cb){
+        cb(null, uploadDir);
+    },
+    filename : function(req, file, cb){
+        cb(null, 'product-'+Date.now()+'.'+file.mimetype.split('/')[1]);
+    }
+})
+var upload = multer({storage:storage}); //미들웨어 설정
+// 미들웨어 설정시 req.file 사용가능
 
 router.get('/', function(req,res){
     res.send('admin app');
@@ -20,9 +35,10 @@ router.get('/products', function(req,res){
 router.get('/products/write', csrfProtection, function(req,res){
     res.render('admin/form', {product:"", csrfToken:req.csrfToken()});
 });
-router.post('/products/write', csrfProtection, function(req,res){
+router.post('/products/write', upload.single('thumbnail'), csrfProtection, function(req,res){
     var product = new ProductsModel({
         name : req.body.name,
+        thumbnail : (req.file) ? req.file.filename : "",
         price : req.body.price,
         description : req.body.description
     });
@@ -49,14 +65,22 @@ router.get('/products/edit/:id', csrfProtection, function(req,res){
         res.render('admin/form', {product:product, csrfToken:req.csrfToken()});
     });
 });
-router.post('/products/edit/:id', csrfProtection, function(req,res){
-    var query = {
-        name : req.body.name,
-        price : req.body.price,
-        description : req.body.description
-    }
-    ProductsModel.update({id:req.params.id}, {$set:query}, function(err){
-        res.redirect('/admin/products/detail/'+req.params.id);
+router.post('/products/edit/:id', upload.single('thumbnail'), csrfProtection, function(req,res){
+    ProductsModel.findOne({id:req.params.id}, function(err, product){
+        if(req.file){
+            fs.unlinkSync(uploadDir + '/' + product.thumbnail);
+            // req.file이 있다면 기존의 파일을 지운다.
+        }
+        var query = {
+            name : req.body.name,
+            thumbnail : (req.file) ? req.file.filename : product.thumbnail,
+            // req.file이 없다면 기존의 파일 그대로 사용
+            price : req.body.price,
+            description : req.body.description
+        }
+        ProductsModel.update({id:req.params.id}, {$set:query}, function(err){
+            res.redirect('/admin/products/detail/'+req.params.id);
+        });
     });
 });
 //제품 삭제 라우터 작성
