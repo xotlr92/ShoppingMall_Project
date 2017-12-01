@@ -17,6 +17,7 @@ autoIncrement.initialize(connect);
 
 // 라우트 불러오기
 var admin = require('./routes/admin');
+var accounts = require('./routes/accounts');
 
 var app = express();
 var port = 3000;
@@ -37,6 +38,7 @@ app.use('/uploads', express.static('uploads'));
 
 // 라우팅
 app.use('/admin', admin);
+app.use('/accounts', accounts);
 
 app.get('/', function(req,res){
     res.send('first app');
