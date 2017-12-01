@@ -3,6 +3,10 @@ var router = express.Router();
 // model 모듈 불러오기
 var ProductsModel = require('../models/ProductsModel');
 var CommentsModel = require('../models/CommentsModel');
+//csrf 셋팅
+var csrf = require('csurf');
+var csrfProtection = csrf({cookie:true});//csrf 미들웨어 설정
+//미들웨어 설정시 req.csrfToken()사용가능.
 
 router.get('/', function(req,res){
     res.send('admin app');
@@ -13,10 +17,10 @@ router.get('/products', function(req,res){
     });
 });
 // 제품 등록 페이지 작성
-router.get('/products/write', function(req,res){
-    res.render('admin/form', {product:""});
+router.get('/products/write', csrfProtection, function(req,res){
+    res.render('admin/form', {product:"", csrfToken:req.csrfToken()});
 });
-router.post('/products/write', function(req,res){
+router.post('/products/write', csrfProtection, function(req,res){
     var product = new ProductsModel({
         name : req.body.name,
         price : req.body.price,
@@ -40,12 +44,12 @@ router.get('/products/detail/:id', function(req,res){
     });
 });
 //제품 수정 라우터 작성
-router.get('/products/edit/:id', function(req,res){
+router.get('/products/edit/:id', csrfProtection, function(req,res){
     ProductsModel.findOne({id:req.params.id}, function(err, product){
-        res.render('admin/form', {product:product});
+        res.render('admin/form', {product:product, csrfToken:req.csrfToken()});
     });
 });
-router.post('/products/edit/:id', function(req,res){
+router.post('/products/edit/:id', csrfProtection, function(req,res){
     var query = {
         name : req.body.name,
         price : req.body.price,

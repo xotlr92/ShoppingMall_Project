@@ -2,6 +2,7 @@ var express = require('express');
 var path = require('path');
 var bodyParser = require('body-parser'); // form에서 넘어온 데이터를 javascript 객체로 맵핑
 var logger = require('morgan'); // post, get 요청시 console에 로깅
+var cookieParser = require('cookie-parser');
 
 // mongoose 설정
 var mongoose = require('mongoose');
@@ -29,6 +30,7 @@ app.set('view engine', 'ejs');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:false}));
+app.use(cookieParser());
 
 // 라우팅
 app.use('/admin', admin);
