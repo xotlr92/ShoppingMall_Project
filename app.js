@@ -26,6 +26,7 @@ var admin = require('./routes/admin');
 var accounts = require('./routes/accounts');
 var auth = require('./routes/auth');
 var home = require('./routes/home');
+var chat = require('./routes/chat');
 
 var app = express();
 var port = 3000;
@@ -72,7 +73,10 @@ app.use('/admin', admin);
 app.use('/accounts', accounts);
 app.use('/auth', auth);
 app.use('/', home);
+app.use('/chat', chat);
 
-app.listen(port, function(){
+var server = app.listen(port, function(){
     console.log('connected', port);
 });
+var io = require('socket.io')(server);
+require('./lib/socketConnection')(io);
