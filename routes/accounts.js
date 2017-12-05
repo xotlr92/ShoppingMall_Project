@@ -38,7 +38,7 @@ router.post('/join', function(req,res){
     var user = new UserModel({
         username : req.body.username,
         password : transPassword(req.body.password),
-        displayName : req.body.displayName
+        displayName : req.body.displayname
     });
     user.save(function(err){
         res.send('<script>alert("회원가입 성공"); location.href="/accounts/login";</script>')

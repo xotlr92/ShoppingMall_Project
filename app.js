@@ -25,6 +25,7 @@ autoIncrement.initialize(connect);
 var admin = require('./routes/admin');
 var accounts = require('./routes/accounts');
 var auth = require('./routes/auth');
+var home = require('./routes/home');
 
 var app = express();
 var port = 3000;
@@ -70,10 +71,7 @@ app.use(function(req,res,next){
 app.use('/admin', admin);
 app.use('/accounts', accounts);
 app.use('/auth', auth);
-
-app.get('/', function(req,res){
-    res.send('first app');
-});
+app.use('/', home);
 
 app.listen(port, function(){
     console.log('connected', port);
