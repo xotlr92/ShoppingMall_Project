@@ -60,6 +60,12 @@ app.use(passport.session());
 //flash message 미들웨어
 app.use(flash());
 
+app.use(function(req,res,next){
+    app.locals.isLogin = req.isAuthenticated();
+    // locals : view에서만 전역변수로 isLogin을 셋팅
+    next();
+});
+
 // 라우팅
 app.use('/admin', admin);
 app.use('/accounts', accounts);

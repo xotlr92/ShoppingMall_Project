@@ -52,7 +52,7 @@ router.post('/login', passport.authenticate('local', {
         failureFlash: true 
     }),
     function(req,res){
-        res.send('<script>alert("로그인 성공"); location.href="/accounts/success";</script>');
+        res.send('<script>alert("로그인 성공"); location.href="/";</script>');
     }
 );
 router.get('/success', function(req,res){
