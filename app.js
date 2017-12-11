@@ -46,6 +46,23 @@ app.use(cookieParser());
 app.use('/uploads', express.static('uploads'));
 
 //session 관련 설정
+//session을 저장하기위해 connect-mongo 사용
+var MongoStore = require('connect-mongo')(session);
+var sessionMiddleWare = session({ //socket에서 미들웨어로 사용하기위해 sessionMiddleWare로 따로뺌
+    secret : 'shoppingMall',
+    resave : false,
+    saveUninitialized : true,
+    cookie : {
+        maxAge : 2000*60*60 // 지속시간 2시간 설정
+    },
+    store : new MongoStore({
+        mongooseConnection : mongoose.connection,
+        ttl: 14*24*60*60    // 만료기간 설정
+    })
+});
+app.use(sessionMiddleWare);
+
+
 app.use(session({
     secret : 'shoppingMall',
     resave : false,
@@ -79,4 +96,8 @@ var server = app.listen(port, function(){
     console.log('connected', port);
 });
 var io = require('socket.io')(server);
+io.use(function(socket, next){
+    sessionMiddleWare(socket.request, socket.request.res, next);
+    // socket에서 session에 접근할 수 있음.
+});
 require('./lib/socketConnection')(io);
