@@ -55,10 +55,12 @@ router.post('/products/write', loginRequired, upload.single('thumbnail'), csrfPr
 });
 //제품 상세 라우터 작성
 router.get('/products/detail/:id', function(req,res){
-    ProductsModel.findOne({id:req.params.id}, function(err, product){
-        CommentsModel.find({product_id:req.params.id}, function(err, comments){
-            res.render('admin/productsDetail', {product:product, comments:comments});
-        });
+    var getData = async () => ({
+        product : await ProductsModel.findOne({id:req.params.id}).exec(),
+        comments : await CommentsModel.find({product_id:req.params.id}).exec()
+    });
+    getData().then(function(result){
+        res.render('admin/productsDetail', {product:result.product, comments:result.comments});
     });
 });
 //제품 수정 라우터 작성
