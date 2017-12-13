@@ -27,6 +27,8 @@ var accounts = require('./routes/accounts');
 var auth = require('./routes/auth');
 var home = require('./routes/home');
 var chat = require('./routes/chat');
+var products = require('./routes/products');
+var cart = require('./routes/cart');
 
 var app = express();
 var port = 3000;
@@ -44,6 +46,7 @@ app.use(cookieParser());
 
 //upload path
 app.use('/uploads', express.static('uploads'));
+app.use('/static', express.static('static'));
 
 //session 관련 설정
 //session을 저장하기위해 connect-mongo 사용
@@ -91,6 +94,8 @@ app.use('/accounts', accounts);
 app.use('/auth', auth);
 app.use('/', home);
 app.use('/chat', chat);
+app.use('/products', products);
+app.use('/cart', cart);
 
 var server = app.listen(port, function(){
     console.log('connected', port);
