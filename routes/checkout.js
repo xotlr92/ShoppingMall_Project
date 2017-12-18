@@ -1,6 +1,9 @@
 var express = require('express');
 var router = express.Router();
 var CheckoutModel = require('../models/CheckoutModel');
+var request = require('request');
+var cheerio = require('cheerio');
+var removeEmpty = require('../lib/removeEmpty');
 
 router.get('/', function(req,res){
     var totalAmount = 0;
@@ -65,6 +68,34 @@ router.get('/nomember', function(req,res){
 router.get('/nomember/search', function(req,res){
     CheckoutModel.find({buyer_email : req.query.email}, function(err, checkoutList){
         res.render('checkout/search', {checkoutList:checkoutList});
+    });
+});
+
+router.get('/shipping/:invc_no', (req,res)=>{
+    var url = "https://www.doortodoor.co.kr/parcel/doortodoor.do?fsp_action=PARC_ACT_002&fsp_cmd=retrieveInvNoACT&invc_no="+req.params.invc_no;
+    var result = [];
+    request(url, (error,response,body)=>{
+        var $ = cheerio.load(body, {decodeEntities:false});
+        var tdElements = $(".board_area").find("table.mb15 tbody tr td");
+        
+        for(var i=0; i<tdElements.length; i++){
+            if(i%4===0){
+                var temp = {};
+                temp["step"] = removeEmpty(tdElements[i].children[0].data);
+            } else if(i%4===1){
+                temp["date"] = tdElements[i].children[0].data;
+            } else if(i%4===2){
+                temp["status"] = tdElements[i].children[0].data;
+                if(tdElements[i].children.length>1){
+                    temp["status"] += tdElements[i].children[2].data;
+                }
+            } else if(i%4===3){
+                temp["location"] = tdElements[i].children[1].children[0].data;
+                result.push(temp);
+                temp = {};
+            }
+        }
+        res.render('checkout/shipping', {result:result});
     });
 });
 
