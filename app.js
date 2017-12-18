@@ -86,6 +86,8 @@ app.use(flash());
 app.use(function(req,res,next){
     app.locals.isLogin = req.isAuthenticated();
     // locals : view에서만 전역변수로 isLogin을 셋팅
+    app.locals.userData = req.user;
+
     next();
 });
 

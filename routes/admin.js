@@ -23,7 +23,7 @@ var storage = multer.diskStorage({
 })
 var upload = multer({storage:storage}); //미들웨어 설정
 // 미들웨어 설정시 req.file 사용가능
-var loginRequired = require('../lib/loginRequired');
+var adminRequired = require('../lib/adminRequired');
 
 router.get('/', function(req,res){
     res.send('admin app');
@@ -34,10 +34,10 @@ router.get('/products', function(req,res){
     });
 });
 // 제품 등록 페이지 작성
-router.get('/products/write', loginRequired, csrfProtection, function(req,res){
+router.get('/products/write', adminRequired, csrfProtection, function(req,res){
     res.render('admin/form', {product:"", csrfToken:req.csrfToken()});
 });
-router.post('/products/write', loginRequired, upload.single('thumbnail'), csrfProtection, function(req,res){
+router.post('/products/write', adminRequired, upload.single('thumbnail'), csrfProtection, function(req,res){
     var product = new ProductsModel({
         name : req.body.name,
         thumbnail : (req.file) ? req.file.filename : "",
@@ -65,12 +65,12 @@ router.get('/products/detail/:id', function(req,res){
     });
 });
 //제품 수정 라우터 작성
-router.get('/products/edit/:id', loginRequired, csrfProtection, function(req,res){
+router.get('/products/edit/:id', adminRequired, csrfProtection, function(req,res){
     ProductsModel.findOne({id:req.params.id}, function(err, product){
         res.render('admin/form', {product:product, csrfToken:req.csrfToken()});
     });
 });
-router.post('/products/edit/:id', loginRequired, upload.single('thumbnail'), csrfProtection, function(req,res){
+router.post('/products/edit/:id', adminRequired, upload.single('thumbnail'), csrfProtection, function(req,res){
     ProductsModel.findOne({id:req.params.id}, function(err, product){
         if(req.file){
             fs.unlinkSync(uploadDir + '/' + product.thumbnail);
@@ -114,17 +114,17 @@ router.post('/products/ajax_comment/delete', function(req,res){
     });
 });
 
-router.post('/products/ajax_summernote', loginRequired, upload.single('thumbnail'), function(req,res){
+router.post('/products/ajax_summernote', adminRequired, upload.single('thumbnail'), function(req,res){
     res.send('/uploads/'+req.file.filename);
 });
 
-router.get('/order', function(req,res){
+router.get('/order', adminRequired, function(req,res){
     CheckoutModel.find(function(err, orderList){
         res.render('admin/orderList', {orderList:orderList});
     });
 });
 
-router.get('/order/edit/:id', function(req,res){
+router.get('/order/edit/:id', adminRequired, function(req,res){
     CheckoutModel.findOne({id:req.params.id}, function(err, order){
         res.render('admin/orderForm', {order:order});
     });

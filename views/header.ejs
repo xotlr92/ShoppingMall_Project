@@ -36,7 +36,9 @@
                         <li class="active">
                             <a href="/">Home</a>
                         </li>
-                        <li><a href="/admin/products">ADMIN</a></li>
+                        <% if(typeof(userData)!=='undefined' && userData.username==='admin'){%>
+                            <li><a href="/admin/products">ADMIN</a></li>
+                        <% } %>
                         <li><a href="/chat">CHAT</a></li>
                         <li><a href="/cart">CART</a></li>
                         <% if(isLogin){%>
