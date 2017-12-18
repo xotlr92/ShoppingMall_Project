@@ -29,6 +29,7 @@ var home = require('./routes/home');
 var chat = require('./routes/chat');
 var products = require('./routes/products');
 var cart = require('./routes/cart');
+var checkout = require('./routes/checkout');
 
 var app = express();
 var port = 3000;
@@ -96,6 +97,7 @@ app.use('/', home);
 app.use('/chat', chat);
 app.use('/products', products);
 app.use('/cart', cart);
+app.use('/checkout', checkout);
 
 var server = app.listen(port, function(){
     console.log('connected', port);

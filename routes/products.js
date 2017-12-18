@@ -9,7 +9,7 @@ router.get('/:id' , function(req, res){
         comments : await CommentsModel.find( { 'product_id' :  req.params.id }).exec()
     });
     getData().then( result =>{
-        res.render('products/detail', { product: result.product , comments : result.comments });
+        res.render('products/detail', { product: result.product , comments : result.comments});
     });
 });
 
