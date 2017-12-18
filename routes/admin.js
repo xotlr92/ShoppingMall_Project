@@ -3,6 +3,7 @@ var router = express.Router();
 // model 모듈 불러오기
 var ProductsModel = require('../models/ProductsModel');
 var CommentsModel = require('../models/CommentsModel');
+var CheckoutModel = require('../models/CheckoutModel');
 //csrf 셋팅
 var csrf = require('csurf');
 var csrfProtection = csrf({cookie:true});//csrf 미들웨어 설정
@@ -115,6 +116,18 @@ router.post('/products/ajax_comment/delete', function(req,res){
 
 router.post('/products/ajax_summernote', loginRequired, upload.single('thumbnail'), function(req,res){
     res.send('/uploads/'+req.file.filename);
+});
+
+router.get('/order', function(req,res){
+    CheckoutModel.find(function(err, orderList){
+        res.render('admin/orderList', {orderList:orderList});
+    });
+});
+
+router.get('/order/edit/:id', function(req,res){
+    CheckoutModel.findOne({id:req.params.id}, function(err, order){
+        res.render('admin/orderForm', {order:order});
+    });
 });
 
 module.exports = router;
